@@ -7,12 +7,14 @@ use Illuminate\Encryption\Encrypter;
 class Crypter
 {
     private $key;
+
     private $cipher;
+
     private $encrypter;
 
     public function __construct($key)
     {
-        $this->cipher = env("CRYPT_CIPHER", "aes-256-gcm");
+        $this->cipher = env('CRYPT_CIPHER', 'aes-256-gcm');
         $this->setKey($key);
         $this->encrypter = new Encrypter($key, $this->cipher);
     }
@@ -42,9 +44,9 @@ class Crypter
     public static function generateKey()
     {
 
-        $keyLength = env("RANDOM_KEY_LENGTH", 32);
-        $theKey = "";
-        $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%*-/?;";
+        $keyLength = env('RANDOM_KEY_LENGTH', 32);
+        $theKey = '';
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%*-/?;';
         $charsLength = strlen($chars);
 
         while (strlen($theKey) < $keyLength) {

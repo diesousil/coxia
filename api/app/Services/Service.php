@@ -2,16 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\Model;
+use App\Repositories\Repository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\ItemNotFoundException;
-use App\Services\ServiceValidator;
-use App\Repositories\Repository;
-use App\Models\Model;
 
 abstract class Service
 {
     protected ?ServiceValidator $validator = null;
+
     private array $defaultSearchFields = [];
 
     public function __construct(
@@ -27,7 +26,7 @@ abstract class Service
 
     protected function getValidatorClassName(): string
     {
-        return static::class. 'Validator';
+        return static::class.'Validator';
     }
 
     private function setValidator()
@@ -69,24 +68,22 @@ abstract class Service
         return $this->repository->delete($id);
     }
 
-    public function list(array|null $paginationSets = null, bool $paginate = true): LengthAwarePaginator | Collection
+    public function list(?array $paginationSets = null, bool $paginate = true): LengthAwarePaginator|Collection
     {
-        return ($paginate ?
+        return $paginate ?
             $this->repository->listWithPagination($paginationSets) :
-            $this->repository->list()
-        );
+            $this->repository->list();
     }
 
-    public function getById(string|int $id): Model | null
+    public function getById(string|int $id): ?Model
     {
         return $this->repository->getById($id);
     }
 
-    public function search(string $searchTerms, array|null $paginationSets = null, bool $paginate = true): LengthAwarePaginator | Collection
+    public function search(string $searchTerms, ?array $paginationSets = null, bool $paginate = true): LengthAwarePaginator|Collection
     {
-        return ($paginate ?
+        return $paginate ?
             $this->repository->searchWithPagination($this->defaultSearchFields, $searchTerms, $paginationSets) :
-            $this->repository->search($this->defaultSearchFields, $searchTerms)
-        );
+            $this->repository->search($this->defaultSearchFields, $searchTerms);
     }
 }

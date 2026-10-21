@@ -1,5 +1,3 @@
 <?php
 
-class Helper
-{
-}
+class Helper {}

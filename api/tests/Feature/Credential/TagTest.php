@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Credential;
 
-use App\Models\User;
 use App\Models\Credential\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -26,7 +26,7 @@ class TagTest extends TestCase
         $tagData = [
             'name' => 'Work',
             'slug' => 'work',
-            'description' => 'Work related credentials'
+            'description' => 'Work related credentials',
         ];
 
         $response = $this->postJson('/api/tags', $tagData);
@@ -38,13 +38,13 @@ class TagTest extends TestCase
                 'id',
                 'name',
                 'slug',
-                'description'
-            ]
+                'description',
+            ],
         ]);
 
         $this->assertDatabaseHas('tags', [
             'name' => 'Work',
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
     }
 
@@ -53,7 +53,7 @@ class TagTest extends TestCase
     {
         // Create test tags
         Tag::factory()->count(3)->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->getJson('/api/tags');
@@ -66,15 +66,15 @@ class TagTest extends TestCase
                     'id',
                     'name',
                     'slug',
-                    'description'
-                ]
+                    'description',
+                ],
             ],
             'meta' => [
                 'current_page',
                 'last_page',
                 'per_page',
-                'total'
-            ]
+                'total',
+            ],
         ]);
 
         $this->assertCount(3, $response->json('data'));
@@ -85,7 +85,7 @@ class TagTest extends TestCase
     {
         $tag = Tag::factory()->create([
             'user_id' => $this->user->id,
-            'name' => 'Personal'
+            'name' => 'Personal',
         ]);
 
         $response = $this->getJson("/api/tags/{$tag->id}");
@@ -97,8 +97,8 @@ class TagTest extends TestCase
                 'id',
                 'name',
                 'slug',
-                'description'
-            ]
+                'description',
+            ],
         ]);
 
         $this->assertEquals('Personal', $response->json('data.name'));
@@ -109,24 +109,24 @@ class TagTest extends TestCase
     {
         $tag = Tag::factory()->create([
             'user_id' => $this->user->id,
-            'name' => 'Original Name'
+            'name' => 'Original Name',
         ]);
 
         $updatedData = [
             'name' => 'Updated Name',
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ];
 
         $response = $this->patchJson("/api/tags/{$tag->id}", $updatedData);
 
         $response->assertOk();
         $this->assertEquals('Updated Name', $response->json('data.name'));
-        
+
         // Verify in database
         $this->assertDatabaseHas('tags', [
             'id' => $tag->id,
             'name' => 'Updated Name',
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ]);
     }
 
@@ -134,17 +134,17 @@ class TagTest extends TestCase
     public function user_can_delete_a_tag()
     {
         $tag = Tag::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->deleteJson("/api/tags/{$tag->id}");
 
         $response->assertOk();
         $this->assertNull($response->json('data'));
-        
+
         // Verify soft delete
         $this->assertSoftDeleted('tags', [
-            'id' => $tag->id
+            'id' => $tag->id,
         ]);
     }
 
@@ -154,22 +154,22 @@ class TagTest extends TestCase
         // Create test tags
         Tag::factory()->create([
             'user_id' => $this->user->id,
-            'name' => 'Work Projects'
+            'name' => 'Work Projects',
         ]);
-        
+
         Tag::factory()->create([
             'user_id' => $this->user->id,
-            'name' => 'Personal Finance'
+            'name' => 'Personal Finance',
         ]);
 
         // Search by name
-        $response = $this->getJson("/api/tags/search/Finance");
+        $response = $this->getJson('/api/tags/search/Finance');
         $response->assertOk();
         $this->assertCount(1, $response->json('data'));
         $this->assertEquals('Personal Finance', $response->json('data.0.name'));
 
         // Search by partial match
-        $response = $this->getJson("/api/tags/search/work");
+        $response = $this->getJson('/api/tags/search/work');
         $response->assertOk();
         $this->assertCount(1, $response->json('data'));
         $this->assertEquals('Work Projects', $response->json('data.0.name'));
@@ -182,7 +182,7 @@ class TagTest extends TestCase
         $otherUser = User::factory()->create();
         $otherTag = Tag::factory()->create([
             'user_id' => $otherUser->id,
-            'name' => 'Other User Tag'
+            'name' => 'Other User Tag',
         ]);
 
         // Try to access other user's tag

@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Responses\Resources\Resource;
 use App\Models\Model;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use InvalidArgumentException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class Controller
 {
@@ -21,7 +18,7 @@ abstract class Controller
 
     private function validateResourceClass(?string $resourceClass)
     {
-        if ($resourceClass != null && !is_subclass_of($resourceClass, JsonResource::class)) {
+        if ($resourceClass != null && ! is_subclass_of($resourceClass, JsonResource::class)) {
             throw new InvalidArgumentException(
                 "A classe {$this->resource} deve estender JsonResource."
             );
@@ -32,10 +29,10 @@ abstract class Controller
     {
         $resourceClass = $this->getResourceClass();
 
-        if (!$resourceClass || is_bool($data)) {
+        if (! $resourceClass || is_bool($data)) {
             return response()->json([
                 'success' => true,
-                'data'    => $data,
+                'data' => $data,
             ], Response::HTTP_OK);
         }
 
@@ -64,7 +61,7 @@ abstract class Controller
     {
         return response()->json([
             'success' => false,
-            'error'   => $message,
+            'error' => $message,
         ], $statusCode);
     }
 }

@@ -7,7 +7,6 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Access\AccessController;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -25,17 +24,11 @@ class RouteServiceProvider extends ServiceProvider
             Route::prefix('/api')
                 ->group(function () {
                     Route::get('/version', function () {
-                        return env("APP_APIVERSION");
+                        return env('APP_APIVERSION');
                     });
 
                     Route::prefix('/access')
                         ->group(base_path('routes/api/access.php'));
-
-                    Route::prefix('/credential')
-                        ->group(base_path('routes/api/credential.php'));
-
-                    Route::prefix('/tag')
-                        ->group(base_path('routes/api/tag.php'));
                 });
 
         });

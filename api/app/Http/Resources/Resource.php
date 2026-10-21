@@ -15,9 +15,9 @@ class Resource extends JsonResource
 
             $data['meta'] = [
                 'current_page' => $this->currentPage(),
-                'last_page'    => $this->lastPage(),
-                'per_page'     => $this->perPage(),
-                'total'        => $this->total(),
+                'last_page' => $this->lastPage(),
+                'per_page' => $this->perPage(),
+                'total' => $this->total(),
             ];
 
         }

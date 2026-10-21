@@ -2,25 +2,23 @@
 
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class Repository
 {
     public function __construct(
         protected Model $model
-    ) {
-    }
+    ) {}
 
-    protected function paginate(Builder $query, array|null $data): LengthAwarePaginator
+    protected function paginate(Builder $query, ?array $data): LengthAwarePaginator
     {
         $pageSize = (isset($data['page_size']) ? intval($data['page_size']) :
                         (env('DEFAULT_LIST_PAGE_SIZE') != null ? env('DEFAULT_LIST_PAGE_SIZE') : 15));
 
-        $page     = (isset($data['page']) ? intval($data['page']) : 1);
+        $page = (isset($data['page']) ? intval($data['page']) : 1);
 
         return $query->paginate($pageSize, ['*'], 'page', $page);
     }
@@ -67,12 +65,12 @@ class Repository
         return $this->getQuery()->find($id);
     }
 
-    public function listWithPagination(array|null $paginationSets): LengthAwarePaginator
+    public function listWithPagination(?array $paginationSets): LengthAwarePaginator
     {
         return $this->paginate($this->getQuery(), $paginationSets);
     }
 
-    public function list(array|null $data): Collection
+    public function list(?array $data): Collection
     {
         return $this->getQuery()->get();
     }
@@ -86,6 +84,4 @@ class Repository
     {
         return $this->paginate($this->getQuery()->search($fields, $searchTerms), $paginationSets);
     }
-
-
 }

@@ -1,8 +1,8 @@
 <?php
 
 use App\Exceptions\Handler;
-use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
 use App\Http\Middleware\HandleAppearance;
+use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

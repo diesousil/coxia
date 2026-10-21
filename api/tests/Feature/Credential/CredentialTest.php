@@ -2,12 +2,9 @@
 
 namespace Tests\Feature\Credential;
 
-use App\Models\User;
 use App\Models\Credential\Credential;
-use App\Models\Credential\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class CredentialTest extends TestCase
@@ -47,13 +44,13 @@ class CredentialTest extends TestCase
                 'url',
                 'username',
                 'observations',
-                'tags'
-            ]
+                'tags',
+            ],
         ]);
 
         $this->assertDatabaseHas('credentials', [
             'title' => 'Test Credential',
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
     }
 
@@ -62,7 +59,7 @@ class CredentialTest extends TestCase
     {
         // Create test credentials
         Credential::factory()->count(3)->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->getJson('/api/credentials');
@@ -77,15 +74,15 @@ class CredentialTest extends TestCase
                     'description',
                     'url',
                     'username',
-                    'observations'
-                ]
+                    'observations',
+                ],
             ],
             'meta' => [
                 'current_page',
                 'last_page',
                 'per_page',
-                'total'
-            ]
+                'total',
+            ],
         ]);
 
         $this->assertCount(3, $response->json('data'));
@@ -96,7 +93,7 @@ class CredentialTest extends TestCase
     {
         $credential = Credential::factory()->create([
             'user_id' => $this->user->id,
-            'title' => 'Test Credential'
+            'title' => 'Test Credential',
         ]);
 
         $response = $this->getJson("/api/credentials/{$credential->id}");
@@ -111,8 +108,8 @@ class CredentialTest extends TestCase
                 'url',
                 'username',
                 'observations',
-                'tags'
-            ]
+                'tags',
+            ],
         ]);
 
         $this->assertEquals('Test Credential', $response->json('data.title'));
@@ -123,24 +120,24 @@ class CredentialTest extends TestCase
     {
         $credential = Credential::factory()->create([
             'user_id' => $this->user->id,
-            'title' => 'Original Title'
+            'title' => 'Original Title',
         ]);
 
         $updatedData = [
             'title' => 'Updated Title',
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ];
 
         $response = $this->patchJson("/api/credentials/{$credential->id}", $updatedData);
 
         $response->assertOk();
         $this->assertEquals('Updated Title', $response->json('data.title'));
-        
+
         // Verify in database
         $this->assertDatabaseHas('credentials', [
             'id' => $credential->id,
             'title' => 'Updated Title',
-            'description' => 'Updated Description'
+            'description' => 'Updated Description',
         ]);
     }
 
@@ -148,17 +145,17 @@ class CredentialTest extends TestCase
     public function user_can_delete_a_credential()
     {
         $credential = Credential::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->deleteJson("/api/credentials/{$credential->id}");
 
         $response->assertOk();
         $this->assertNull($response->json('data'));
-        
+
         // Verify soft delete
         $this->assertSoftDeleted('credentials', [
-            'id' => $credential->id
+            'id' => $credential->id,
         ]);
     }
 
@@ -166,11 +163,11 @@ class CredentialTest extends TestCase
     public function user_can_set_and_get_password()
     {
         $credential = Credential::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $passwordData = [
-            'password' => 'newSecurePass123'
+            'password' => 'newSecurePass123',
         ];
 
         // Set password
@@ -190,23 +187,23 @@ class CredentialTest extends TestCase
         Credential::factory()->create([
             'user_id' => $this->user->id,
             'title' => 'Google Account',
-            'username' => 'googleuser'
+            'username' => 'googleuser',
         ]);
-        
+
         Credential::factory()->create([
             'user_id' => $this->user->id,
             'title' => 'GitHub Account',
-            'username' => 'githubuser'
+            'username' => 'githubuser',
         ]);
 
         // Search by title
-        $response = $this->getJson("/api/credentials/search/Github");
+        $response = $this->getJson('/api/credentials/search/Github');
         $response->assertOk();
         $this->assertCount(1, $response->json('data'));
         $this->assertEquals('GitHub Account', $response->json('data.0.title'));
 
         // Search by username
-        $response = $this->getJson("/api/credentials/search/google");
+        $response = $this->getJson('/api/credentials/search/google');
         $response->assertOk();
         $this->assertCount(1, $response->json('data'));
         $this->assertEquals('Google Account', $response->json('data.0.title'));
@@ -219,7 +216,7 @@ class CredentialTest extends TestCase
         $otherUser = User::factory()->create();
         $otherCredential = Credential::factory()->create([
             'user_id' => $otherUser->id,
-            'title' => 'Other User Credential'
+            'title' => 'Other User Credential',
         ]);
 
         // Try to access other user's credential
